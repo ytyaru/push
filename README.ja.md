@@ -91,7 +91,7 @@ push
 　ユーザー名は`./.git/config`の`[user]name`から取得する。存在しない場合は次のように入力を求めます。
 
 ```sh
-Please select a user.
+ユーザを選択してください。
 1) user1
 2) user2
 3) user3
@@ -105,14 +105,14 @@ Please select a user.
 --------------------
 add 'README.md'
 --------------------
-Push when you enter a commit message. Press Enter key without any input to end.
+Commit messageを入力するとPush。未入力でEnterキー押下すると終了。
 
 ```
 
 　初回時、`git init`でローカルリポジトリを作成します。 また、[GitHub API](https://developer.github.com/v3/repos/#create)を使用してリモートリポジトリを作成します。
 
 ```sh
-Created a repository
+リポジトリを作成します。
 [master (root-commit) 1342344] Created a repository
  1 file changed, 4 insertions(+)
  create mode 100644 README.md
@@ -132,7 +132,7 @@ To https://github.com/USERNAME/REPO_NAME.git
 　変更がない場合、何もせずに終了する。
 
 ```sh
-No change. Exit.
+変更なし。終了します。
 ```
 
 　2回目以降、変更があれば `add`,` commit`, `push`を促す。
@@ -142,7 +142,7 @@ No change. Exit.
 --------------------
 add 'README.md'
 --------------------
-Push when you enter a commit message. Press Enter key without any input to end.
+Commit messageを入力するとPush。未入力でEnterキー押下すると終了。
 
 ```
 
@@ -172,8 +172,6 @@ user1	user1token_user	user
 user2	user2token_all	all
 user3	user3token_repo	repo
 ```
-
-# Note
 
 ## Errors
 

@@ -168,8 +168,6 @@ user2	user2token_all	all
 user3	user3token_repo	repo
 ```
 
-# Note
-
 ## Errors
 
 ```sh
