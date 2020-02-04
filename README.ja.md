@@ -27,7 +27,7 @@ Linux raspberrypi 4.19.75-v7l+ #1270 SMP Tue Sep 24 18:51:41 BST 2019 armv7l GNU
 
 ```sh
 git clone https://github.com/ytyaru/push
-ln -s ./lish.sh /usr/bin/lish
+ln -s ./push.ja.sh /usr/bin/push
 ```
 
 # 使い方
@@ -43,31 +43,31 @@ push -h
 
 <details><summary>help</summary>
 ```sh
-Push to GitHub with current directory as repository.
-Usage: push [options...]
-Options:
-  -u USERNAME
-  -m COMMIT_MESSAGE
-  -h HOMEPAGE
-  -t TOPICS
-Setting:
-  Work flow:
-    1. Create a GitHub account    https://github.com/
-    2. Create AccessToken         https://github.com/settings/tokens
-    3. Create setting-file
-  Setting-file: ./res/setting/setting.sh
-    examples: 
+現在のディレクトリをリポジトリとしてGitHubにプッシュする。
+使い方: push.ja.sh [任意引数...]
+任意引数:
+  -u ユーザ名
+  -m コミットメッセージ
+  -h ホームページURL
+  -t トピックス
+設定:
+  手順:
+    1. GitHubアカウント作成 https://github.com/
+    2. AccessToken作成      https://github.com/settings/tokens
+    3. 以下設定ファイル作成
+  設定ファイルのパス設定: ./res/setting/setting.sh
+    例:
       PATH_TSV_TOKENS=./tokens.tsv
       PATH_TSV_EMAILS=./emails.tsv
-    Source code: $THIS
-  tokens.tsv: ./res/setting/tokens.sh
-    line-format: Username\\tToken\\tNote(ScopesCsv)
-  emails.tsv:./res/setting/emails.sh
-    line-format: Username\\tEMail
-Examples:
-  push
-  push -u YourUsername
-  push -u YourUsername -m CommitMessage -h HomePage -t topic1 -t topic2 -t topic3
+    本ソースコード: ./src/push/push.ja.sh
+  tokens.tsv: ./res/setting/tokens.tsv
+    行の書式: Username\tToken\tNote(ScopesCsv)
+  emails.tsv: ./res/setting/emails.tsv
+    行の書式: Username\tEMail
+例:
+  push.ja.sh
+  push.ja.sh -u YourUsername
+  push.ja.sh -u YourUsername -m CommitMessage -h HomePage -t topic1 -t topic2 -t topic3
 ```
 
 　`-h`オプションはヘルプの表示にも使える。`-h`オプションはホームページ設定用だが、値が設定されていないと引数エラーが発生する。引数エラーが発生した場合、ヘルプを表示する。結果、ヘルプは`-h`で表示される。

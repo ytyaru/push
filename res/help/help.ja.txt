@@ -11,7 +11,7 @@
     2. AccessToken作成      https://github.com/settings/tokens
     3. 以下設定ファイル作成
   設定ファイルのパス設定: $PATH_SH_SETTING
-    例: 
+    例:
       PATH_TSV_TOKENS=./tokens.tsv
       PATH_TSV_EMAILS=./emails.tsv
     本ソースコード: $THIS
