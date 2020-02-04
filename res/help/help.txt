@@ -1,0 +1,25 @@
+Push to GitHub with current directory as repository.
+Usage: $(ThisFileName) [options...]
+Options:
+  -u USERNAME
+  -m COMMIT_MESSAGE
+  -h HOMEPAGE
+  -t TOPICS
+Setting:
+  Work flow:
+    1. Create a GitHub account    https://github.com/
+    2. Create AccessToken         https://github.com/settings/tokens
+    3. Create setting-file
+  Setting-file: $PATH_SH_SETTING
+    examples: 
+      PATH_TSV_TOKENS=./tokens.tsv
+      PATH_TSV_EMAILS=./emails.tsv
+    Source code: $THIS
+  tokens.tsv: $PATH_TSV_TOKENS
+    line-format: Username\\tToken\\tNote(ScopesCsv)
+  emails.tsv: $PATH_TSV_EMAILS
+    line-format: Username\\tEMail
+Examples:
+  $(ThisFileName)
+  $(ThisFileName) -u YourUsername
+  $(ThisFileName) -u YourUsername -m CommitMessage -h HomePage -t topic1 -t topic2 -t topic3

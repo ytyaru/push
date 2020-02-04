@@ -1,0 +1,10 @@
+#username	token	note(ScopeCsv)
+user1	user1token_all	all
+user1	user1token_repo	repo
+user1	user1token_repo_del	repo,delete_repo
+user1	user1token_del_repo	repo_delete_repo,repo
+user1	user1token_del_repo_gist	delete_repo,repo,gist
+user1	user1token_user	user
+user2	user2token_all	all
+user3	user3token_repo	repo
+user5_has_not_email	user5token_repo	all

@@ -1,0 +1,25 @@
+現在のディレクトリをリポジトリとしてGitHubにプッシュする。
+使い方: $(ThisFileName) [任意引数...]
+任意引数:
+  -u ユーザ名
+  -m コミットメッセージ
+  -h ホームページURL
+  -t トピックス
+設定:
+  手順:
+    1. GitHubアカウント作成 https://github.com/
+    2. AccessToken作成      https://github.com/settings/tokens
+    3. 以下設定ファイル作成
+  設定ファイルのパス設定: $PATH_SH_SETTING
+    例: 
+      PATH_TSV_TOKENS=./tokens.tsv
+      PATH_TSV_EMAILS=./emails.tsv
+    本ソースコード: $THIS
+  tokens.tsv: $PATH_TSV_TOKENS
+    行の書式: Username\\tToken\\tNote(ScopesCsv)
+  emails.tsv: $PATH_TSV_EMAILS
+    行の書式: Username\\tEMail
+例:
+  $(ThisFileName)
+  $(ThisFileName) -u YourUsername
+  $(ThisFileName) -u YourUsername -m CommitMessage -h HomePage -t topic1 -t topic2 -t topic3
