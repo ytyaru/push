@@ -129,13 +129,13 @@ To https://github.com/USERNAME/REPO_NAME.git
  * [new branch]      master -> master
 ```
 
-If nothing has changed, exit without doing anything.
+　変更がない場合、何もせずに終了する。
 
 ```sh
 No change. Exit.
 ```
 
-After the second time, if there is a change, `add`,` commit`, `push`.
+　2回目以降、変更があれば `add`,` commit`, `push`を促す。
 
 ```sh
  M README.md
@@ -148,7 +148,7 @@ Push when you enter a commit message. Press Enter key without any input to end.
 
 ## Setting
 
-Enter your GitHub username, email address and token in each configuration file.
+　各設定ファイルにGitHubユーザー名、メールアドレス、トークンを入力する。
 
 ### [emails.tsv](res/emails.tsv)
 
