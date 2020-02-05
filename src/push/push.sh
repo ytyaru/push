@@ -70,6 +70,8 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 					local url="$(echo "$(GetRemoteUrl)" | sed -e 's/^https:\/\/github.com\///g')"
 					local items=(${url//\// })
 					USERNAME="${items[0]}"
+#					SetRemoteUrl() { git remote set-url origin https://${USERNAME}:${TOKEN}@github.com/USERNAME/REPOSITORY.git; }
+					SetRemoteUrl() { git remote set-url origin 'https://'"${USERNAME}:${TOKEN}"'@github.com/'"$url"; }
 				}
 				#format: git remote set-url origin https://github.com/USERNAME/REPOSITORY.git
 				#format: git remote add origin "https://${USERNAME}:${TOKEN}@github.com/${USERNAME}/${REPO_NAME}.git"
@@ -176,11 +178,13 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 	AddCommitPush() {
 		Add() { git add .; }
 		Commit() { git commit -m "$COMMIT_MESSAGE"; }
+		SetRemoteUrl() { git remote set-url origin 'https://'"${USERNAME}:${TOKEN}"'@github.com/'"${USERNAME}/${REPO_NAME}.git"; }
 		Push() { git push origin master; }
 		IsNotReposiotry() { [[ "$1" =~ ^fatal:[[:space:]]not[[:space:]]a[[:space:]]git[[:space:]]repository* ]]; }
 		IsNotFoundRemoteRepository() { [[ "$res" =~ ^remote:[[:space:]]Repository[[:space:]]not[[:space:]]found. ]]; }
 		[ -n "$COMMIT_MESSAGE" ] && {
 			Add; Commit;
+			SetRemoteUrl
 			local res="$(Push 2>&1)"
 			IsNotReposiotry "$res" && { git init; CreateRemoteRepository; Push; return; }
 			IsNotFoundRemoteRepository "$res" && { CreateRemoteRepository; Push; return; }
