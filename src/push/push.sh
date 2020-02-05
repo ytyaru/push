@@ -60,6 +60,23 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 		HasGitConfigUser() { GetGitConfigUser &> /dev/null; }
 		HasGitConfigUser && { USERNAME="$(GetGitConfigUser)"; IsExistTsv; return; }
 		[ -n "$ARG_USERNAME" ] && { USERNAME="$ARG_USERNAME"; IsExistTsv; return; }
+		FromConfigUrl() {
+			GetRemoteUrl() { git remote get-url origin; }
+			HasRemoteUrl() { GetRemoteUrl &> /dev/null; }
+			UrlHasnotToken() { [[ "$(GetRemoteUrl)" =~ ^https:\/\/github.com\/.*$ ]]; }
+			GetUserFromUrl() {
+				HasRemoteUrl || return
+				UrlHasnotToken && {
+					local url="$(echo "$(GetRemoteUrl)" | sed -e 's/^https:\/\/github.com\///g')"
+					local items=(${url//\// })
+					USERNAME="${items[0]}"
+				}
+				#format: git remote set-url origin https://github.com/USERNAME/REPOSITORY.git
+				#format: git remote add origin "https://${USERNAME}:${TOKEN}@github.com/${USERNAME}/${REPO_NAME}.git"
+			}
+			GetUserFromUrl
+		}
+		FromConfigUrl
 	}
 	SelectUser() {
 		[ -n "$USERNAME" ] && { return; }
@@ -97,6 +114,8 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 			[[ "$line" =~ ^#.* ]] && { echo "$(GetLine "$content" $((line_no + 2)))"; return; }
 		done; Throw 'No description was found.' 'The description is obtained from the README.md file.' 'The second line from the first heading (the line starting with #) is regarded as the description.'; )
 	}
+	# Fetch the user name and token from the repository obtained by `git pull`.
+	# When you get it with `git pull`, TOKEN disappears from` [remote "origin"] url` in `./. git / config`. `[user] name, email` also disappears. Get the user name in the URL as the user to push, and get the TOKEN from the configuration file.
 	CreateRepository() {
 		SetupGitGlobalUser() {
 			# 「*** Please tell me who you are.」error measures

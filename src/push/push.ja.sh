@@ -60,6 +60,23 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 		HasGitConfigUser() { GetGitConfigUser &> /dev/null; }
 		HasGitConfigUser && { USERNAME="$(GetGitConfigUser)"; IsExistTsv; return; }
 		[ -n "$ARG_USERNAME" ] && { USERNAME="$ARG_USERNAME"; IsExistTsv; return; }
+		FromConfigUrl() {
+			GetRemoteUrl() { git remote get-url origin; }
+			HasRemoteUrl() { GetRemoteUrl &> /dev/null; }
+			UrlHasnotToken() { [[ "$(GetRemoteUrl)" =~ ^https:\/\/github.com\/.*$ ]]; }
+			GetUserFromUrl() {
+				HasRemoteUrl || return
+				UrlHasnotToken && {
+					local url="$(echo "$(GetRemoteUrl)" | sed -e 's/^https:\/\/github.com\///g')"
+					local items=(${url//\// })
+					USERNAME="${items[0]}"
+				}
+				#format: git remote set-url origin https://github.com/USERNAME/REPOSITORY.git
+				#format: git remote add origin "https://${USERNAME}:${TOKEN}@github.com/${USERNAME}/${REPO_NAME}.git"
+			}
+			GetUserFromUrl
+		}
+		FromConfigUrl
 	}
 	SelectUser() {
 		[ -n "$USERNAME" ] && { return; }
