@@ -63,16 +63,22 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 		FromConfigUrl() {
 			GetRemoteUrl() { git remote get-url origin; }
 			HasRemoteUrl() { GetRemoteUrl &> /dev/null; }
-			UrlHasnotToken() { [[ "$(GetRemoteUrl)" =~ ^https:\/\/github.com\/.*$ ]]; }
+#			UrlHasnotToken() { [[ "$(GetRemoteUrl)" =~ ^https:\/\/github.com\/.*$ ]]; }
+			UrlHasnotToken() { [[ "$(GetRemoteUrl)" =~ ^https:\/\/(.+):(.+)@github.com\/(.+)\/(.+).git$ ]]; }
 			GetUserFromUrl() {
 				HasRemoteUrl || return
 				UrlHasnotToken && {
-					local url="$(echo "$(GetRemoteUrl)" | sed -e 's/^https:\/\/github.com\///g')"
-					local items=(${url//\// })
-					USERNAME="${items[0]}"
+					USERNAME="${BASH_REMATCH[1]}"
 				}
+#				UrlHasnotToken && {
+#					local url="$(echo "$(GetRemoteUrl)" | sed -e 's/^https:\/\/github.com\///g')"
+#					local items=(${url//\// })
+#					USERNAME="${items[0]}"
+#				}
 				#format: git remote set-url origin https://github.com/USERNAME/REPOSITORY.git
 				#format: git remote add origin "https://${USERNAME}:${TOKEN}@github.com/${USERNAME}/${REPO_NAME}.git"
+				#2021-01-24: git remote get-url origin
+				#https://ytyaru:...TOKEN...@github.com/ytyaru/...REPO_NAME....git
 			}
 			GetUserFromUrl
 		}
@@ -138,8 +144,15 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 	}
 	CreateRemoteRepository() {
 		local json='"name":"'"${REPO_NAME}"'","description":"'"${DESCRIPTION}"'"'
+#		local json="\"name\":${REPO_NAME}\",\"description\":\"${DESCRIPTION}\""
 		[ -n "$ARG_HOMEPAGE" ] && json+=',"homepage":"'"$ARG_HOMEPAGE"'"'
-		json='{'"$json"'}'
+#		echo 'JSON--------------------'                
+#		echo "$json"
+#		json='{'"$json"'}'
+#		json='{'"${json}"'}'
+		json="{${json}}"
+		echo "$json"
+#		echo 'JSON--------------------'                
 		echo "$json" | curl -u "${USERNAME}:${TOKEN}" https://api.github.com/user/repos -d @-
 		ReplaceTopics
 	}
@@ -151,6 +164,7 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 			local json='{"names":'"$topics"'}'
 			sleep 1
 			echo "$json" | curl -XPUT -H "Accept: application/vnd.github.mercy-preview+json" -u "${USERNAME}:${TOKEN}" https://api.github.com/repos/${USERNAME}/${REPO_NAME}/topics -d @-
+			echo "$json"
 		}
 	}
 	CheckView() {

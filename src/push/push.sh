@@ -63,18 +63,22 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 		FromConfigUrl() {
 			GetRemoteUrl() { git remote get-url origin; }
 			HasRemoteUrl() { GetRemoteUrl &> /dev/null; }
-			UrlHasnotToken() { [[ "$(GetRemoteUrl)" =~ ^https:\/\/github.com\/.*$ ]]; }
+#			UrlHasnotToken() { [[ "$(GetRemoteUrl)" =~ ^https:\/\/github.com\/.*$ ]]; }
+			UrlHasnotToken() { [[ "$(GetRemoteUrl)" =~ ^https:\/\/(.+):(.+)@github.com\/(.+)\/(.+).git$ ]]; }
 			GetUserFromUrl() {
 				HasRemoteUrl || return
 				UrlHasnotToken && {
-					local url="$(echo "$(GetRemoteUrl)" | sed -e 's/^https:\/\/github.com\///g')"
-					local items=(${url//\// })
-					USERNAME="${items[0]}"
-#					SetRemoteUrl() { git remote set-url origin https://${USERNAME}:${TOKEN}@github.com/USERNAME/REPOSITORY.git; }
-					SetRemoteUrl() { git remote set-url origin 'https://'"${USERNAME}:${TOKEN}"'@github.com/'"$url"; }
+					USERNAME="${BASH_REMATCH[1]}"
 				}
+#				UrlHasnotToken && {
+#					local url="$(echo "$(GetRemoteUrl)" | sed -e 's/^https:\/\/github.com\///g')"
+#					local items=(${url//\// })
+#					USERNAME="${items[0]}"
+#				}
 				#format: git remote set-url origin https://github.com/USERNAME/REPOSITORY.git
 				#format: git remote add origin "https://${USERNAME}:${TOKEN}@github.com/${USERNAME}/${REPO_NAME}.git"
+				#2021-01-24: git remote get-url origin
+				#https://ytyaru:...TOKEN...@github.com/ytyaru/...REPO_NAME....git
 			}
 			GetUserFromUrl
 		}
@@ -116,8 +120,6 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 			[[ "$line" =~ ^#.* ]] && { echo "$(GetLine "$content" $((line_no + 2)))"; return; }
 		done; Throw 'No description was found.' 'The description is obtained from the README.md file.' 'The second line from the first heading (the line starting with #) is regarded as the description.'; )
 	}
-	# Fetch the user name and token from the repository obtained by `git pull`.
-	# When you get it with `git pull`, TOKEN disappears from` [remote "origin"] url` in `./. git / config`. `[user] name, email` also disappears. Get the user name in the URL as the user to push, and get the TOKEN from the configuration file.
 	CreateRepository() {
 		SetupGitGlobalUser() {
 			# 「*** Please tell me who you are.」error measures
@@ -144,6 +146,7 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 		local json='"name":"'"${REPO_NAME}"'","description":"'"${DESCRIPTION}"'"'
 		[ -n "$ARG_HOMEPAGE" ] && json+=',"homepage":"'"$ARG_HOMEPAGE"'"'
 		json='{'"$json"'}'
+		echo "$json"
 		echo "$json" | curl -u "${USERNAME}:${TOKEN}" https://api.github.com/user/repos -d @-
 		ReplaceTopics
 	}
