@@ -21,12 +21,14 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 		Help() { eval "cat <<< \"$(cat "$PATH_TXT_HELP")\""; exit 1; }
 		local OPTIND OPT
 		ARG_TOPICS=()
-		while getopts ":u:m:h:t:" OPT; do
+		while getopts ":u:m:h:t:l:p" OPT; do
 			case $OPT in
 				u) ARG_USERNAME="$OPTARG";;
 				m) ARG_COMMIT_MESSAGE="$OPTARG";;
 				h) ARG_HOMEPAGE="$OPTARG";;
 				t) ARG_TOPICS+=("$OPTARG");;
+				l) ARG_LICENSE="$OPTARG";;
+				p) ARG_PRIVATE=1;;
 				\?) Help; exit 1;;
 				*) Help; exit 1;;
 			esac
@@ -101,7 +103,9 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 	}
 	Token() {
 		. "$HERE/lib/get_tokens.sh"
-		local tsvtoken="$(GetToken "$USERNAME" "public_repo")"
+		#local tsvtoken="$(GetToken "$USERNAME" "public_repo")"
+		#[ -z "$tsvtoken" ] && tsvtoken="$(GetToken "$USERNAME" "repo")" || : ;
+		[ -n "$ARG_PRIVATE" ] && tsvtoken="$(GetToken "$USERNAME" "repo")" || tsvtoken="$(GetToken "$USERNAME" "public_repo")" ;
 		[ -n "$tsvtoken" ] || { Throw "指定ユーザ\"$USERNAME\"のTokenは設定ファイルに存在しません。" 'ヘルプにある手順の通りに作成してください。';  }
 		TOKEN="$tsvtoken"
 	}
@@ -144,15 +148,11 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 	}
 	CreateRemoteRepository() {
 		local json='"name":"'"${REPO_NAME}"'","description":"'"${DESCRIPTION}"'"'
-#		local json="\"name\":${REPO_NAME}\",\"description\":\"${DESCRIPTION}\""
 		[ -n "$ARG_HOMEPAGE" ] && json+=',"homepage":"'"$ARG_HOMEPAGE"'"'
-#		echo 'JSON--------------------'                
-#		echo "$json"
-#		json='{'"$json"'}'
-#		json='{'"${json}"'}'
+		[ -n "$ARG_LICENSE" ] && json+=',"license_template":"'"$ARG_LICENSE"'"'
+		[ -n "$ARG_PRIVATE" ] && json+=',"private":"'"true"'"'
 		json="{${json}}"
 		echo "$json"
-#		echo 'JSON--------------------'                
 		echo "$json" | curl -u "${USERNAME}:${TOKEN}" https://api.github.com/user/repos -d @-
 		ReplaceTopics
 	}
@@ -219,3 +219,4 @@ Run() { # arguments: -u:username, -m:commit-message, -h:homepage -t:topics
 	unset USERNAME EMAIL TOKEN DESCRIPTION REPO_PATH REPO_NAME
 }
 Run "$@"
+

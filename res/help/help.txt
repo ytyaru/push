@@ -5,6 +5,8 @@ Options:
   -m COMMIT_MESSAGE
   -h HOMEPAGE
   -t TOPICS
+  -p PRIVATE
+  -l LICENSE
 Setting:
   Work flow:
     1. Create a GitHub account    https://github.com/
@@ -22,4 +24,12 @@ Setting:
 Examples:
   $(ThisFileName)
   $(ThisFileName) -u YourUsername
-  $(ThisFileName) -u YourUsername -m CommitMessage -h HomePage -t topic1 -t topic2 -t topic3
+  $(ThisFileName) -u YourUsername -m CommitMessage -h HomePage -t topic1 -t topic2 -t topic3 -l cc0-1.0
+  $(ThisFileName) -p
+  $(ThisFileName) -p -u YourUsername -m CommitMessage -h HomePage -t topic1 -t topic2 -t topic3 -l cc0-1.0
+Parameter values:
+  -l license_template https://github.com/github/choosealicense.com/tree/gh-pages/_licenses
+    agpl-3.0, apatch-2.0, cc0-1.0, cc-by-sa-4.0, mit, ...
+  -i gitignore_template https://github.com/github/gitignore
+    c, c++, python, ruby, rust, ...
+    C# -> dotnet new gitignore
